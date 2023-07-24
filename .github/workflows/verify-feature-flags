@@ -35,11 +35,6 @@ jobs:
 
     steps:
 
-    # set up node
-    - uses: actions/setup-node@v3
-        with:
-          node-version: '14'
-
     # checkout the repo
     - name: 'Checkout project repo'
       uses: actions/checkout@v3
@@ -72,4 +67,9 @@ jobs:
         echo "PROJECT_NAME: $PROJECT_NAME"
         git status
 
-    - uses: ./jenkins-scripts/scripts/verify-feature-flags.js
+    # set up node
+    - uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+    - run: npm install
+    - run: node ./jenkins-scripts/scripts/verify-feature-flags
