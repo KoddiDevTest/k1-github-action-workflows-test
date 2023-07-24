@@ -1,0 +1,73 @@
+###############################
+#Github Actions to verify changelogs
+###############################
+name: K1-github-action-workflows-verify-changelogs
+
+#controls when the pipeline will trigger
+on:
+  workflow_call:
+    inputs:
+      project-name:
+        required: true
+        type: string
+
+#set environment vars for all jobs
+env:
+  PROJECT_NAME: ${{ inputs.project-name }}
+  GITHUB_USER: ${{ secrets.ACCESS_TOKEN_USR }}
+  GITHUB_PASS: ${{ secrets.ACCESS_TOKEN_PWD }}
+  CHANGE_TARGET: ${{ github.base_ref }} #the target of the merge/pull request
+  BRANCH_NAME: ${{ github.head_ref }} #the origin/source of the merge/pull request
+
+
+jobs:
+
+  ####################################
+  # Runs verify change logs script. Runs only on PR when targeted branch is development.
+  # If fails,this whole pipeline fails. Then Github would mark this PR not mergeable.
+  ####################################
+  verify-changelogs:
+    if: |
+      !contains(github.event.head_commit.message, '[ci-skip]')
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    # checkout the repo
+    - name: 'Checkout project repo'
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Precheck
+      run: |
+        pwd
+        ls -l
+        whoami
+        git status
+
+    - name: Checkout jenkinsfile repo
+      uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.ACCESS_TOKEN_PWD }}
+        fetch-depth: 1
+        repository: KoddiDev/Jenkinsfiles
+        ref: main
+        path: jenkins-scripts
+
+    - name: Postcheck
+      run: |
+        pwd
+        ls -l
+        ls -l jenkins-scripts
+        whoami
+        echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+        echo "PROJECT_NAME: $PROJECT_NAME"
+        git status
+
+    - name: Run shell script
+      id: my_id
+      run: |
+        ./jenkins-scripts/scripts/verify_changelogs.sh
+      shell: bash
