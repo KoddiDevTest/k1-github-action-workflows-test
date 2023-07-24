@@ -36,19 +36,19 @@ jobs:
     steps:
 
     # checkout the repo
-    - name: 'Checkout project repo'
+    - name: 'Checkout project repo k1'
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
 
-    - name: Precheck
+    - name: Precheck k1
       run: |
         pwd
         ls -l
         whoami
         git status
 
-    - name: Checkout jenkinsfile repo
+    - name: Checkout jenkinsfile repo k1
       uses: actions/checkout@v3
       with:
         token: ${{ secrets.ACCESS_TOKEN_PWD }}
@@ -57,7 +57,7 @@ jobs:
         ref: main
         path: jenkins-scripts
         
-    - name: Postcheck
+    - name: Postcheck k1
       run: |
         pwd
         ls -l
@@ -68,7 +68,7 @@ jobs:
         git status
 
     # set up node
-    - name: 'Checkout project repo'
+    - name: 'set up node k1'
       uses: actions/setup-node@v3
       with:
         node-version: '14'
