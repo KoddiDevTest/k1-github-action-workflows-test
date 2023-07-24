@@ -72,4 +72,4 @@ jobs:
         with:
           node-version: '14'
     - run: npm install
-    - run: node ./jenkins-scripts/scripts/verify-feature-flags
+    - run: npm start
