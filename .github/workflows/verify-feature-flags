@@ -26,10 +26,7 @@ jobs:
   # Runs verify feature flags script. Runs only on PR when targeted branch is master.
   # If fails,this whole pipeline fails. Then Github would mark this PR not mergeable.
   ####################################
-  verify-changelogs:
-    if: |
-      !contains(github.event.head_commit.message, '[ci-skip]')
-
+  verify-feature-flags:
     runs-on: ubuntu-latest
 
     steps:
@@ -66,8 +63,7 @@ jobs:
         echo "PROJECT_NAME: $PROJECT_NAME"
         git status
 
-    - name: Run shell script
+    - name: Run node script
       id: my_id
       run: |
-        ./jenkins-scripts/scripts/verify_feature_flags.sh
-      shell: bash
+        ./jenkins-scripts/scripts/verify-feature-flags.js
