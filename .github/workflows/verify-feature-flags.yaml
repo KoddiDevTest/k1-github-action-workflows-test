@@ -73,5 +73,6 @@ jobs:
       with:
         node-version: '14'
 
-    - run: npm install
-    - run: npm start
+    - run: npm install dot-env
+    - run: npm install axios
+    - run: node scripts/verify-feature-flags.js
