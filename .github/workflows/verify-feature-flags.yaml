@@ -36,7 +36,7 @@ jobs:
     steps:
 
     # checkout the repo
-    - name: 'Checkout project repo k1'
+    - name: Checkout project repo
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
@@ -48,7 +48,7 @@ jobs:
         whoami
         git status
 
-    - name: Checkout jenkinsfile repo k1
+    - name: Checkout jenkinsfile repo
       uses: actions/checkout@v3
       with:
         token: ${{ secrets.ACCESS_TOKEN_PWD }}
@@ -68,12 +68,13 @@ jobs:
         git status
 
     # set up node
-    - name: 'set up node k1'
+    - name: Node setup
       uses: actions/setup-node@v3
       with:
         node-version: '14'
-        
-    - run: |
+    
+    - name: Running feature flag check
+      run: |
         npm install dot-env
         npm install axios
         node ./jenkins-scripts/scripts/verify-feature-flags-compiled.js
