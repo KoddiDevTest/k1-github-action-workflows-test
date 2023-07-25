@@ -67,7 +67,7 @@ jobs:
         echo "PROJECT_NAME: $PROJECT_NAME"
         git status
 
-    # set up node
+    # set up node - need v14 and above
     - name: Node setup
       uses: actions/setup-node@v3
       with:
