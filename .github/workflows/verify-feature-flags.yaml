@@ -75,8 +75,6 @@ jobs:
     
     - name: Running feature flag check
       run: |
-        npm install dot-env
-        npm install axios
         node ./jenkins-scripts/scripts/verify-feature-flags-compiled.js
 
 
