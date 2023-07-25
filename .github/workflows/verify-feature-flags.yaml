@@ -73,9 +73,9 @@ jobs:
       with:
         node-version: '14'
         
-    - run: echo "GITHUB_WORKSPACE:$GITHUB_WORKSPACE"
-    - run: npm install dot-env
-    - run: npm install axios
-    - run: node ./jenkins-scripts/scripts/verify-feature-flags.js
+    - run: |
+        npm install dot-env
+        npm install axios
+        node ./jenkins-scripts/scripts/verify-feature-flags-compiled.js
 
 
