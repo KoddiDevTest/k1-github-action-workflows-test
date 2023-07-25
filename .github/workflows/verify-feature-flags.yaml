@@ -18,9 +18,9 @@ env:
   GITHUB_PASS: ${{ secrets.ACCESS_TOKEN_PWD }}
   CHANGE_TARGET: ${{ github.base_ref }} #the target of the merge/pull request
   BRANCH_NAME: ${{ github.head_ref }} #the origin/source of the merge/pull request
-  KODDI_PROJECT_KEY: ${{ secrets.KODDI_PROJECT_KEY }}
+  KODDI_PROJECT_KEY: ${{ secrets.KODDI_PROJECT_KEY }} #the project to run check on
   LAUNCH_DARKLY_API_KEY: ${{ secrets.LAUNCH_DARKLY_API_KEY }}
-  ENV_TO_CHECK: ${{ secrets.ENV_TO_CHECK }}
+  ENV_TO_CHECK: ${{ secrets.ENV_TO_CHECK }} 
   ENV_TO_CHECK_AGAINST: ${{ secrets.ENV_TO_CHECK_AGAINST }}
 
 
