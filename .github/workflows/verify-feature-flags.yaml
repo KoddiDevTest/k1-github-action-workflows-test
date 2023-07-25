@@ -75,6 +75,6 @@ jobs:
     
     - name: Running feature flag check
       run: |
-        node ./jenkins-scripts/scripts/verify-feature-flags-compiled/index.js
+        node ./jenkins-scripts/scripts/verify-feature-flags/index.js
 
 
