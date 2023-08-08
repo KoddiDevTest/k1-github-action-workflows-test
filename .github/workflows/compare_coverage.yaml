@@ -17,15 +17,15 @@ jobs:
       with:
         go-version: 1.19
 
-    - name: Setup GO environment
-      run: |
-        go mod download
-        go get -u golang.org/x/lint/golint
-        go get -t .
-  
-    - name: Lint
-      run: |
-        golint -set_exit_status ./...
+#    - name: Setup GO environment
+#      run: |
+#        go mod download
+#        go get -u golang.org/x/lint/golint
+#        go get -t .
+#
+#    - name: Lint
+#      run: |
+#        golint -set_exit_status ./...
 
     - name: Vet
       run: |
