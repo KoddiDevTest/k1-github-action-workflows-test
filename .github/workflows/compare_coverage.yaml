@@ -4,7 +4,7 @@
 name: K1-github-action-workflows-cover
 
 on:
-  pull_request:
+  workflow_call:
 
 jobs:
   build:
