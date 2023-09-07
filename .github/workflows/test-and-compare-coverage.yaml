@@ -15,13 +15,15 @@ jobs:
     outputs:
       pr_coverage: ${{ steps.unit-tests.outputs.PR_COVERAGE }}
     steps:
+      - name: See branches for debugging
+        run: |
+          echo "Head Branch is ${{ github.event.pull_request.head.ref }}"
+          echo "Commit is ${{ github.event.pull_request.head.sha }}"
+
       - name: Checkout Head Branch
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-        run: |
-          echo "Head Branch is ${{ github.event.pull_request.head.ref }}"
-          echo "Commit is ${{ github.event.pull_request.head.sha }}"
 
       - name: Setup Go
         uses: actions/setup-go@v4.1.0
@@ -43,13 +45,15 @@ jobs:
     outputs:
       base_coverage: ${{ steps.unit-tests.outputs.BASE_COVERAGE }}
     steps:
+      - name: See branches for debugging
+        run: |
+          echo "Base Branch is ${{ github.event.pull_request.base.ref }}"
+          echo "Commit is ${{ github.event.pull_request.base.sha }}"
+
       - name: Checkout Base Branch
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.base.sha }}
-        run: |
-          echo "Base Branch is ${{ github.event.pull_request.base.ref }}"
-          echo "Commit is ${{ github.event.pull_request.base.sha }}"
 
       - name: Setup Go
         uses: actions/setup-go@v4.1.0
