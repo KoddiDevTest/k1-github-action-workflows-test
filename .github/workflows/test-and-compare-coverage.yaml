@@ -37,7 +37,7 @@ jobs:
         id: unit-tests
         run: |
           go test ./... -coverprofile coverage.out -covermode count
-          echo "PR_COVERAGE=$(go tool cover -func=coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+') >> "$GITHUB_OUTPUT"
+          echo "PR_COVERAGE=$(go tool cover -func=coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+')" >> "$GITHUB_OUTPUT"
           echo $PR_COVERAGE
 
   base-branch-unit-tests:
@@ -67,7 +67,7 @@ jobs:
         id: unit-tests
         run: |
           go test ./... -coverprofile coverage.out -covermode count
-          echo "BASE_COVERAGE=$(go tool cover -func=coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+') >> "$GITHUB_OUTPUT"
+          echo "BASE_COVERAGE=$(go tool cover -func=coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+')" >> "$GITHUB_OUTPUT"
           echo $BASE_COVERAGE
 
   compare-coverage:
