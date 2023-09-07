@@ -1,5 +1,5 @@
 ###############################
-# Shared GHA to run unit tests on base branch and PR branch, then
+# Shared GitHub Action to run unit tests on base branch and PR branch, then
 # compare test coverage to detect any unwanted dips, which may indicate
 # a lack of new unit tests.
 ###############################
@@ -15,10 +15,10 @@ jobs:
     outputs:
       pr_coverage: ${{ steps.unit-tests.outputs.PR_COVERAGE }}
     steps:
-      - name: Checkout PR Branch
+      - name: Checkout Head Branch
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref.name }}
+          ref: ${{ github.head.ref }}
 
       - name: Setup Go
         uses: actions/setup-go@v4.1.0
@@ -33,32 +33,17 @@ jobs:
         run: |
           go test ./... -coverprofile coverage.out -covermode count
           echo "PR_COVERAGE=$(go tool cover -func=coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+') >> "$GITHUB_OUTPUT"
+          echo $PR_COVERAGE
 
   base-branch-unit-tests:
     runs-on: ubuntu-latest
     outputs:
       base_coverage: ${{ steps.unit-tests.outputs.BASE_COVERAGE }}
     steps:
-      - name: Get Base Branch From Pull Request Event
-        if: github.event_name == 'pull_request'
-        run: echo "BASE_BRANCH=${{ github.base.ref }}" >> "$GITHUB_ENV"
-
-      - name: Get Current PR
-        id: get-current-pr
-        if: github.event_name == 'push'
-        uses: 8BitJonny/gh-get-current-pr@2.2.0
-        with:
-          filterOutClosed: true
-          filterOutDraft: true
-
-      - name: Get Base Branch From Push Event
-        if: steps.PR.outputs.pr_found == 'true'
-        run: echo "BASE_BRANCH=${{ fromJSON(steps.PR.outputs.pr).base.ref }}" >> "$GITHUB_ENV"
-
       - name: Checkout Base Branch
         uses: actions/checkout@v4
         with:
-          ref: ${{ env.BASE_BRANCH }}
+          ref: ${{ github.base.ref }}
 
       - name: Setup Go
         uses: actions/setup-go@v4.1.0
@@ -73,6 +58,7 @@ jobs:
         run: |
           go test ./... -coverprofile coverage.out -covermode count
           echo "BASE_COVERAGE=$(go tool cover -func=coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+') >> "$GITHUB_OUTPUT"
+          echo $BASE_COVERAGE
 
   compare-coverage:
     runs-on: ubuntu-latest
