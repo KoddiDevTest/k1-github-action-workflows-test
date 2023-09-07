@@ -18,7 +18,10 @@ jobs:
       - name: Checkout Head Branch
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head.ref }}
+          ref: ${{ github.event.pull_request.head.sha }}
+        run: |
+          echo "Head Branch is ${{ github.event.pull_request.head.ref }}"
+          echo "Commit is ${{ github.event.pull_request.head.sha }}"
 
       - name: Setup Go
         uses: actions/setup-go@v4.1.0
@@ -43,7 +46,10 @@ jobs:
       - name: Checkout Base Branch
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.base.ref }}
+          ref: ${{ github.event.pull_request.base.sha }}
+        run: |
+          echo "Base Branch is ${{ github.event.pull_request.base.ref }}"
+          echo "Commit is ${{ github.event.pull_request.base.sha }}"
 
       - name: Setup Go
         uses: actions/setup-go@v4.1.0
