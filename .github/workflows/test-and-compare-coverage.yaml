@@ -37,7 +37,7 @@ jobs:
           go vet -v ./...
 
       - name: Generate Mocks
-        if: ${{ hashFiles('generate_mocks.sh') != '' }}
+        if: hashFiles('${{ inputs.working_directory }}/generate_mocks.sh') != ''
         run: |
           cd ${{ inputs.working_directory }}
           go install github.com/golang/mock/mockgen@v1.6.0
@@ -45,7 +45,7 @@ jobs:
           chmod +x generate_mocks.sh
           ./generate_mocks.sh
 
-      - name: Run Unit Tests And Save Coverage
+      - name: Run Unit Tests And Determine Coverage
         id: unit-tests
         run: |
           cd ${{ inputs.working_directory }}
@@ -81,14 +81,14 @@ jobs:
           chmod +x generate_mocks.sh
           ./generate_mocks.sh
 
-      - name: Run Unit Tests And Save Coverage
+      - name: Run Unit Tests And Determine Coverage
         id: unit-tests
         run: |
           cd ${{ inputs.working_directory }}
           go test ./... -coverprofile coverage.out -covermode count
           echo "BASE_COVERAGE=$(go tool cover -func=coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+')" >> "$GITHUB_OUTPUT"
 
-  compare-coverage:
+  compare-coverages:
     runs-on: ubuntu-latest
     needs: [pr-branch-unit-tests, base-branch-unit-tests]
     steps:
@@ -103,8 +103,8 @@ jobs:
           echo "Current Threshold: $THRESHOLD %"
           RESULT=$(echo "scale=1; ($BASE_COVERAGE - $PR_COVERAGE) < $THRESHOLD" | bc -l)
           if [ $RESULT -eq 1 ]; then
-              echo "::notice title=Passed::Your PR's test coverage looks good!"
+              echo "::notice title=Passed::This PR's test coverage looks good!"
           else
-              echo "::error title=Failed::Your PR's test coverage is outside of the allowed threshold. Ensure that you have adequate tests in applicable packages."
+              echo "::error title=Failed::This PR's test coverage is outside of the allowed threshold. Ensure that you have adequate tests in applicable packages."
               exit 1
           fi
