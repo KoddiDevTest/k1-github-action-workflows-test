@@ -93,4 +93,5 @@ jobs:
               echo "::notice title=Passed::Your PR's test coverage looks good! Or you cheesed the system..."
           else
               echo "::error title=Failed::Your PR's test coverage is outside of the allowed threshold. Ensure that you have adequate tests in applicable packages."
+              exit 1
           fi
