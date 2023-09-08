@@ -31,16 +31,15 @@ jobs:
         with:
           go-version-file: 'go.mod'
 
-      - name: Change Working Directory
-        if: inputs.working_directory != '.'
-        run: cd ${{ inputs.working_directory }}
-
       - name: Go Vet
-        run: go vet -v ./...
+        run: |
+          cd ${{ inputs.working_directory }}
+          go vet -v ./...
 
       - name: Generate Mocks
         if: ${{ hashFiles('generate_mocks.sh') != '' }}
         run: |
+          cd ${{ inputs.working_directory }}
           go install github.com/golang/mock/mockgen@v1.6.0
           ln -s /go/bin/mockgen /usr/local/bin
           chmod +x generate_mocks.sh
@@ -49,6 +48,7 @@ jobs:
       - name: Run Unit Tests And Save Coverage
         id: unit-tests
         run: |
+          cd ${{ inputs.working_directory }}
           go test ./... -coverprofile coverage.out -covermode count
           echo "PR_COVERAGE=$(go tool cover -func=coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+')" >> "$GITHUB_OUTPUT"
 
@@ -67,16 +67,15 @@ jobs:
         with:
           go-version-file: 'go.mod'
 
-      - name: Change Working Directory
-        if: inputs.working_directory != '.'
-        run: cd ${{ inputs.working_directory }}
-
       - name: Go Vet
-        run: go vet -v ./...
+        run: |
+          cd ${{ inputs.working_directory }}
+          go vet -v ./...
 
       - name: Generate Mocks
         if: ${{ hashFiles('generate_mocks.sh') != '' }}
         run: |
+          cd ${{ inputs.working_directory }}
           go install github.com/golang/mock/mockgen@v1.6.0
           ln -s /go/bin/mockgen /usr/local/bin
           chmod +x generate_mocks.sh
@@ -85,6 +84,7 @@ jobs:
       - name: Run Unit Tests And Save Coverage
         id: unit-tests
         run: |
+          cd ${{ inputs.working_directory }}
           go test ./... -coverprofile coverage.out -covermode count
           echo "BASE_COVERAGE=$(go tool cover -func=coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+')" >> "$GITHUB_OUTPUT"
 
@@ -103,7 +103,7 @@ jobs:
           echo "Current Threshold: $THRESHOLD %"
           RESULT=$(echo "scale=1; ($BASE_COVERAGE - $PR_COVERAGE) < $THRESHOLD" | bc -l)
           if [ $RESULT -eq 1 ]; then
-              echo "::notice title=Passed::Your PR's test coverage looks good! Or you cheesed the system..."
+              echo "::notice title=Passed::Your PR's test coverage looks good!"
           else
               echo "::error title=Failed::Your PR's test coverage is outside of the allowed threshold. Ensure that you have adequate tests in applicable packages."
               exit 1
