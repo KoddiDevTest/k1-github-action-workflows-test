@@ -37,7 +37,7 @@ jobs:
           go vet -v ./...
 
       - name: Generate Mocks
-        if: hashFiles('${{ inputs.working_directory }}/generate_mocks.sh') != ''
+        if: hashFiles(format('{0}/generate_mocks.sh', inputs.working_directory)) != ''
         run: |
           cd ${{ inputs.working_directory }}
           go install github.com/golang/mock/mockgen@v1.6.0
