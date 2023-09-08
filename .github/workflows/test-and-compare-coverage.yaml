@@ -67,6 +67,10 @@ jobs:
         with:
           go-version-file: 'go.mod'
 
+      - name: Change Working Directory
+        if: inputs.working_directory != '.'
+        run: cd ${{ inputs.working_directory }}
+
       - name: Go Vet
         run: go vet -v ./...
 
