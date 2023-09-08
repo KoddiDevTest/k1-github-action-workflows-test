@@ -81,7 +81,7 @@ jobs:
     steps:
       - name: Compare Coverages
         env:
-          THRESHOLD: -20
+          THRESHOLD: 1
           PR_COVERAGE: ${{ needs.pr-branch-unit-tests.outputs.pr_coverage }}
           BASE_COVERAGE: ${{ needs.base-branch-unit-tests.outputs.base_coverage }}
         run: |
