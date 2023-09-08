@@ -88,7 +88,7 @@ jobs:
           echo "Base Coverage: $BASE_COVERAGE %"
           echo "PR Coverage: $PR_COVERAGE %"
           echo "Current Threshold: $THRESHOLD %"
-          if [ $(($BASE_COVERAGE - $PR_COVERAGE)) -gt $THRESHOLD ]; then
+          if [ $(($BASE_COVERAGE - $PR_COVERAGE | bc)) -gt $THRESHOLD ]; then
             echo "::notice title=Passed::Your PR's test coverage looks good! Or you cheesed the system..."
           else
             echo "::error title=Failed::Your PR's test coverage is outside of the allowed threshold. Ensure that you have adequate tests in applicable packages."
