@@ -2,6 +2,7 @@
 # Shared GitHub Action to run unit tests on base branch and PR branch, then
 # compare test coverage to detect any unwanted dips, which may indicate
 # a lack of new unit tests.
+# Should only be run on PR events.
 ###############################
 
 name: K1-github-action-workflows-test-and-compare-coverage
@@ -15,11 +16,6 @@ jobs:
     outputs:
       pr_coverage: ${{ steps.unit-tests.outputs.PR_COVERAGE }}
     steps:
-      - name: See branches for debugging
-        run: |
-          echo "Head Branch is ${{ github.event.pull_request.head.ref }}"
-          echo "Commit is ${{ github.event.pull_request.head.sha }}"
-
       - name: Checkout Head Branch
         uses: actions/checkout@v4
         with:
@@ -33,23 +29,25 @@ jobs:
       - name: Go Vet
         run: go vet -v ./...
 
+      - name: Generate Mocks
+        if: ${{ hashFiles('generate_mocks.sh') != '' }}
+        run: |
+          go install github.com/golang/mock/mockgen@v1.6.0
+          ln -s /go/bin/mockgen /usr/local/bin
+          chmod +x generate_mocks.sh
+          ./generate_mocks.sh
+
       - name: Run Unit Tests And Save Coverage
         id: unit-tests
         run: |
           go test ./... -coverprofile coverage.out -covermode count
           echo "PR_COVERAGE=$(go tool cover -func=coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+')" >> "$GITHUB_OUTPUT"
-          echo $PR_COVERAGE
 
   base-branch-unit-tests:
     runs-on: ubuntu-latest
     outputs:
       base_coverage: ${{ steps.unit-tests.outputs.BASE_COVERAGE }}
     steps:
-      - name: See branches for debugging
-        run: |
-          echo "Base Branch is ${{ github.event.pull_request.base.ref }}"
-          echo "Commit is ${{ github.event.pull_request.base.sha }}"
-
       - name: Checkout Base Branch
         uses: actions/checkout@v4
         with:
@@ -63,12 +61,19 @@ jobs:
       - name: Go Vet
         run: go vet -v ./...
 
+      - name: Generate Mocks
+        if: ${{ hashFiles('generate_mocks.sh') != '' }}
+        run: |
+          go install github.com/golang/mock/mockgen@v1.6.0
+          ln -s /go/bin/mockgen /usr/local/bin
+          chmod +x generate_mocks.sh
+          ./generate_mocks.sh
+
       - name: Run Unit Tests And Save Coverage
         id: unit-tests
         run: |
           go test ./... -coverprofile coverage.out -covermode count
           echo "BASE_COVERAGE=$(go tool cover -func=coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+')" >> "$GITHUB_OUTPUT"
-          echo $BASE_COVERAGE
 
   compare-coverage:
     runs-on: ubuntu-latest
@@ -76,9 +81,15 @@ jobs:
     steps:
       - name: Compare Coverages
         env:
+          THRESHOLD: 2
           PR_COVERAGE: ${{ needs.pr-branch-unit-tests.outputs.pr_coverage }}
           BASE_COVERAGE: ${{ needs.base-branch-unit-tests.outputs.base_coverage }}
         run: |
           echo "Base Coverage: $BASE_COVERAGE %"
           echo "PR Coverage: $PR_COVERAGE %"
-          echo "TODO do the math"
+          echo "Current Threshold: $THRESHOLD %"
+          if [ $(($BASE_COVERAGE - $PR_COVERAGE)) -gt $THRESHOLD ]; then
+            echo "::notice title=Passed::Your PR's test coverage looks good! Or you cheesed the system..."
+          else
+            echo "::error title=Failed::Your PR's test coverage is outside of the allowed threshold. Ensure that you have adequate tests in applicable packages."
+          fi
