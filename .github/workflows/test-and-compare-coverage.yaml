@@ -9,6 +9,11 @@ name: K1-github-action-workflows-test-and-compare-coverage
 
 on:
   workflow_call:
+    inputs:
+      working_directory:
+        required: false
+        type: string
+        default: '.'
 
 jobs:
   pr-branch-unit-tests:
@@ -25,6 +30,10 @@ jobs:
         uses: actions/setup-go@v4.1.0
         with:
           go-version-file: 'go.mod'
+
+      - name: Change Working Directory
+        if: inputs.working_directory != '.'
+        run: cd ${{ inputs.working_directory }}
 
       - name: Go Vet
         run: go vet -v ./...
