@@ -14,6 +14,10 @@ on:
         required: false
         type: string
         default: '.'
+      threshold:
+        required: false
+        type: number
+        default: 1
 
 jobs:
   pr-branch-unit-tests:
@@ -124,7 +128,7 @@ jobs:
     steps:
       - name: Compare Coverages
         env:
-          THRESHOLD: 1
+          THRESHOLD: ${{ inputs.threshold }}
           PR_COVERAGE: ${{ needs.pr-branch-unit-tests.outputs.pr_coverage }}
           BASE_COVERAGE: ${{ needs.base-branch-unit-tests.outputs.base_coverage }}
         run: |
