@@ -34,6 +34,18 @@ jobs:
       - name: Set Git Credentials
         run: git config --global url."https://${{secrets.ACCESS_TOKEN_USR}}:${{secrets.ACCESS_TOKEN_PWD}}@github.com".insteadOf "https://github.com"
 
+      - name: Trick Swagger
+        if: hashFiles('docs/') != ''
+        run: |
+          echo "package docs
+          
+          type SwaggerInfoStruct struct {
+            BasePath string
+          }
+  
+          var SwaggerInfo SwaggerInfoStruct
+          " >> docs/swagger.go
+
       - name: Go Vet
         run: |
           cd ${{ inputs.working_directory }}
@@ -72,6 +84,18 @@ jobs:
 
       - name: Set Git Credentials
         run: git config --global url."https://${{secrets.ACCESS_TOKEN_USR}}:${{secrets.ACCESS_TOKEN_PWD}}@github.com".insteadOf "https://github.com"
+
+      - name: Trick Swagger
+        if: hashFiles('docs/') != ''
+        run: |
+          echo "package docs
+
+          type SwaggerInfoStruct struct {
+            BasePath string
+          }
+
+          var SwaggerInfo SwaggerInfoStruct
+          " >> docs/swagger.go
 
       - name: Go Vet
         run: |
