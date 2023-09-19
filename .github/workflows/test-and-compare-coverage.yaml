@@ -46,14 +46,9 @@ jobs:
           type SwaggerInfoStruct struct {
             BasePath string
           }
-  
+          
           var SwaggerInfo SwaggerInfoStruct
           " >> docs/swagger.go
-
-      - name: Go Vet
-        run: |
-          cd ${{ inputs.working_directory }}
-          go vet -v ./...
 
       - name: Generate Mocks
         if: hashFiles(format('{0}/generate_mocks.sh', inputs.working_directory)) != ''
@@ -63,6 +58,11 @@ jobs:
           ln -s /go/bin/mockgen /usr/local/bin
           chmod +x generate_mocks.sh
           ./generate_mocks.sh
+
+      - name: Go Vet
+        run: |
+          cd ${{ inputs.working_directory }}
+          go vet -v ./...
 
       - name: Run Unit Tests And Determine Coverage
         id: unit-tests
@@ -101,11 +101,6 @@ jobs:
           var SwaggerInfo SwaggerInfoStruct
           " >> docs/swagger.go
 
-      - name: Go Vet
-        run: |
-          cd ${{ inputs.working_directory }}
-          go vet -v ./...
-
       - name: Generate Mocks
         if: hashFiles(format('{0}/generate_mocks.sh', inputs.working_directory)) != ''
         run: |
@@ -114,6 +109,11 @@ jobs:
           ln -s /go/bin/mockgen /usr/local/bin
           chmod +x generate_mocks.sh
           ./generate_mocks.sh
+
+      - name: Go Vet
+        run: |
+          cd ${{ inputs.working_directory }}
+          go vet -v ./...
 
       - name: Run Unit Tests And Determine Coverage
         id: unit-tests
