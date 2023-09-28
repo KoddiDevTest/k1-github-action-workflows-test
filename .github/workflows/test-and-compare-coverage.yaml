@@ -41,7 +41,6 @@ jobs:
       - name: Trick Swagger
         if: hashFiles(format('{0}/docs/', inputs.working_directory)) != ''
         run: |
-          cd ${{ inputs.working_directory }}
           echo "package docs
           
           type SwaggerInfoStruct struct {
