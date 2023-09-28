@@ -41,6 +41,7 @@ jobs:
       - name: Trick Swagger
         if: hashFiles(format('{0}/docs/', inputs.working_directory)) != ''
         run: |
+          cd ${{ inputs.working_directory }}
           echo "package docs
           
           type SwaggerInfoStruct struct {
@@ -61,8 +62,6 @@ jobs:
 
       - name: Go Vet
         run: |
-          echo("go vet here")
-          echo "$(hashFiles "$(format '{0}/docs/' "${{ inputs.working_directory }}")")"
           cd ${{ inputs.working_directory }}
           go vet -v ./...
 
