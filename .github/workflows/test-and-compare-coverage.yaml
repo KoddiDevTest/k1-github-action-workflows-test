@@ -39,7 +39,7 @@ jobs:
         run: git config --global url."https://${{secrets.ACCESS_TOKEN_USR}}:${{secrets.ACCESS_TOKEN_PWD}}@github.com".insteadOf "https://github.com"
 
       - name: Trick Swagger
-        if: hashFiles('docs/') != ''
+        if: hashFiles(format('{0}/docs/', inputs.working_directory)) != ''
         run: |
           echo "package docs
           
@@ -90,7 +90,7 @@ jobs:
         run: git config --global url."https://${{secrets.ACCESS_TOKEN_USR}}:${{secrets.ACCESS_TOKEN_PWD}}@github.com".insteadOf "https://github.com"
 
       - name: Trick Swagger
-        if: hashFiles('docs/') != ''
+        if: hashFiles(format('{0}/docs/', inputs.working_directory)) != ''
         run: |
           echo "package docs
 
