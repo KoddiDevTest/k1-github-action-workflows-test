@@ -61,6 +61,7 @@ jobs:
 
       - name: Go Vet
         run: |
+          echo("go vet here")
           echo(hashFiles(format('{0}/docs/', inputs.working_directory)))
           cd ${{ inputs.working_directory }}
           go vet -v ./...
