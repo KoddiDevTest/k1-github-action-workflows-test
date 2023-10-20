@@ -14,8 +14,7 @@ on:
   workflow_dispatch: #allows the job to trigger manually
 
 env:
-  GITHUB_USER: ${{ secrets.ACCESS_TOKEN_USR }}
-  GITHUB_PASS: ${{ secrets.ACCESS_TOKEN_PWD }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   rebase-dev-spark:
