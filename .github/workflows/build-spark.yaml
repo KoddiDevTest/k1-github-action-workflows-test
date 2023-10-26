@@ -1,56 +1,20 @@
 ###############################
-#Github Action to rebase into spark-job branches
+# Github Action to rebase release in to staging-spark-job
 ###############################
-name: Build-Spark
+name: Build-Staging-Spark
 
 #controls when the pipeline will trigger
 on:
-  pull_request:
+  push:
     branches:
-      - development
       - release-**
-      - master
-    types: [closed]
   workflow_dispatch: #allows the job to trigger manually
 
 env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GITHUB_USER: ${{ secrets.ACCESS_TOKEN_USR }}
+  GITHUB_PASS: ${{ secrets.ACCESS_TOKEN_PWD }}
 
 jobs:
-  rebase-dev-spark:
-    if: ${{ github.ref == 'refs/heads/development' }}
-    runs-on: ubuntu-latest
-    steps:
-      # checkout the repo
-      - name: 'Checkout project repo'
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
-
-      - name: 'Checkout dev-spark-job'
-        run: |
-          git fetch --all
-          git checkout dev-spark-job
-          git pull origin dev-spark-job
-          git status
-
-      - name: Removing [ci-skip] commit before rebase
-        run: |
-          if [[ -n $(git log -1 | grep '.*\[ci-skip\].*') ]]; then
-            echo "Removing [ci-skip] commit before rebase"
-            git reset --hard HEAD~1
-          fi
-        shell: bash
-
-      - name: 'Rebase with development'
-        run: |
-          git rebase origin/development
-          git status
-
-      - name: 'Push to remote'
-        run: git push origin dev-spark-job -f
-
   rebase-staging-spark:
     if: contains(github.base_ref, 'release')
     runs-on: ubuntu-latest
@@ -59,7 +23,7 @@ jobs:
       - name: 'Checkout project repo'
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.ACCESS_TOKEN_PWD }}
           fetch-depth: 0
 
       - name: 'Checkout staging-spark-job'
@@ -84,37 +48,3 @@ jobs:
 
       - name: 'Push to remote'
         run: git push origin staging-spark-job -f
-
-  rebase-master-spark:
-    if: ${{ github.ref == 'refs/heads/master' }}
-    runs-on: ubuntu-latest
-    steps:
-      # checkout the repo
-      - name: 'Checkout project repo'
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
-
-      - name: 'Checkout master-spark-job'
-        run: |
-          git fetch --all
-          git checkout master-spark-job
-          git pull origin master-spark-job
-          git status
-
-      - name: Removing [ci-skip] commit before rebase
-        run: |
-          if [[ -n $(git log -1 | grep '.*\[ci-skip\].*') ]]; then
-            echo "Removing [ci-skip] commit before rebase"
-            git reset --hard HEAD~1
-          fi
-        shell: bash
-
-      - name: 'Rebase with master'
-        run: |
-          git rebase origin/master
-          git status
-
-      - name: 'Push to remote'
-        run: git push origin master-spark-job -f
