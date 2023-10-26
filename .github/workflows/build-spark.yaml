@@ -11,8 +11,9 @@ on:
   workflow_dispatch: #allows the job to trigger manually
 
 env:
-  GITHUB_USER: ${{ secrets.ACCESS_TOKEN_USR }}
-  GITHUB_PASS: ${{ secrets.ACCESS_TOKEN_PWD }}
+  #GITHUB_USER: ${{ secrets.ACCESS_TOKEN_USR }}
+  #GITHUB_PASS: ${{ secrets.ACCESS_TOKEN_PWD }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   rebase-staging-spark:
@@ -22,7 +23,8 @@ jobs:
       - name: 'Checkout project repo'
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.ACCESS_TOKEN_PWD }}
+          # token: ${{ secrets.ACCESS_TOKEN_PWD }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
       - name: 'Checkout staging-spark-job'
