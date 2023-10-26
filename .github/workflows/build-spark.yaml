@@ -16,7 +16,6 @@ env:
 
 jobs:
   rebase-staging-spark:
-    if: contains(github.base_ref, 'release')
     runs-on: ubuntu-latest
     steps:
       # checkout the repo
